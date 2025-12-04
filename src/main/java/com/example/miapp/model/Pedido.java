@@ -6,6 +6,12 @@ import java.util.List;
 import jakarta.persistence.*;
 import lombok.*;
 
+public enum Estado {
+    PENDIENTE,
+    CONFIRMADO,
+    CANCELADO
+}
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -21,7 +27,6 @@ public class Pedido {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // tabla intermedio 
     @ManyToMany
     @JoinTable(
             name = "pedido_producto",
@@ -29,4 +34,9 @@ public class Pedido {
             inverseJoinColumns = @JoinColumn(name = "producto_id")
     )
     private List<Producto> productos = new ArrayList<>();
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Estado estado = Estado.PENDIENTE; 
 }
