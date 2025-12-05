@@ -31,10 +31,4 @@ public class Pedido {
             inverseJoinColumns = @JoinColumn(name = "producto_id")
     )
     private List<Producto> productos = new ArrayList<>();
-
-    public enum EstadoPedido {
-        PENDIENTE,
-        CONFIRMADO,
-        CANCELADO
-    }
 }
