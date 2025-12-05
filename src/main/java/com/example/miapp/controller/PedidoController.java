@@ -1,80 +1,103 @@
 package com.example.miapp.controller;
 
 import com.example.miapp.model.Pedido;
+import com.example.miapp.model.Pedido.EstadoPedido;
 import com.example.miapp.model.Producto;
 import com.example.miapp.model.User;
 import com.example.miapp.repository.PedidoRepository;
 import com.example.miapp.repository.ProductoRepository;
 import com.example.miapp.repository.UserRepository;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Pedido")
+@RequestMapping("/api/pedido")
 @CrossOrigin(origins = "*")
 public class PedidoController {
 
-    private final PedidoRepository PedidoRepository;
+    private final PedidoRepository pedidoRepository;
     private final UserRepository userRepository;
-    private final ProductoRepository prodRepository;
+    private final ProductoRepository productoRepository;
 
-    public PedidoController(PedidoRepository PedidoRepository,
-                             UserRepository userRepository,
-                             ProductoRepository prodRepository) {
-        this.PedidoRepository = PedidoRepository;
+    public PedidoController(PedidoRepository pedidoRepository,
+                            UserRepository userRepository,
+                            ProductoRepository productoRepository) {
+        this.pedidoRepository = pedidoRepository;
         this.userRepository = userRepository;
-        this.prodRepository = prodRepository;
+        this.productoRepository = productoRepository;
     }
 
     @PostMapping("/crear/{userId}")
     public ResponseEntity<Pedido> crearPedido(@PathVariable Long userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
 
-        Pedido Pedido = new Pedido();
-        Pedido.setUser(user);
+        Pedido pedido = new Pedido();
+        pedido.setUser(user);
+        pedido.setEstado(EstadoPedido.PENDIENTE);
 
-        return ResponseEntity.ok(PedidoRepository.save(Pedido));
+        return ResponseEntity.ok(pedidoRepository.save(pedido));
     }
 
     @PostMapping("/{pedidoId}/agregar/{productoId}")
     public ResponseEntity<Pedido> agregarProducto(
-            @PathVariable Long PedidoId,
+            @PathVariable Long pedidoId,
             @PathVariable Long productoId) {
 
-        Pedido Pedido = PedidoRepository.findById(PedidoId)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado"));
 
-        Producto producto = prodRepository.findById(productoId)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        Producto producto = productoRepository.findById(productoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producto no encontrado"));
 
-        Pedido.getProductos().add(producto);
-        //aaaaa
-        return ResponseEntity.ok(PedidoRepository.save(Pedido));
+        pedido.getProductos().add(producto);
+
+        return ResponseEntity.ok(pedidoRepository.save(pedido));
     }
 
-    @GetMapping("/{PedidoId}")
-    public ResponseEntity<List<Producto>> verProductos(@PathVariable Long PedidoId) {
+    @GetMapping("/{pedidoId}")
+    public ResponseEntity<List<Producto>> verProductos(@PathVariable Long pedidoId) {
 
-        Pedido Pedido = PedidoRepository.findById(PedidoId)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado"));
 
-        return ResponseEntity.ok(Pedido.getProductos());
+        return ResponseEntity.ok(pedido.getProductos());
     }
 
     @DeleteMapping("/{pedidoId}/vaciar")
-    public ResponseEntity<Void> vaciarPedido(@PathVariable Long PedidoId) {
+    public ResponseEntity<Void> vaciarPedido(@PathVariable Long pedidoId) {
 
-        Pedido Pedido = PedidoRepository.findById(PedidoId)
-                .orElseThrow(() -> new RuntimeException("Pedido no encontrado"));
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado"));
 
-        Pedido.getProductos().clear();
-        PedidoRepository.save(Pedido);
+        pedido.getProductos().clear();
+        pedidoRepository.save(pedido);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{pedidoId}/estado/{estado}")
+    public ResponseEntity<Pedido> cambiarEstado(
+            @PathVariable Long pedidoId,
+            @PathVariable String estado) {
+
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido no encontrado"));
+
+        EstadoPedido estadoEnum;
+        try {
+            estadoEnum = EstadoPedido.valueOf(estado.toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Estado inválido");
+        }
+
+        pedido.setEstado(estadoEnum);
+        return ResponseEntity.ok(pedidoRepository.save(pedido));
     }
 }

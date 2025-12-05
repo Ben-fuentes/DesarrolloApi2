@@ -17,9 +17,9 @@ public class Producto {
     private Double precio; 
     private String descripcion;
     private String img;
-    private Number stock;
+    private Integer stock;
     private boolean enOferta = false;
-    private Number precioAntes = null;
+    private Integer precioAntes = null;
 
     @Enumerated(EnumType.STRING)
 

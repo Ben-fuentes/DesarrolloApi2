@@ -21,7 +21,9 @@ public class Pedido {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // tabla intermedio 
+    @Enumerated(EnumType.STRING)
+    private EstadoPedido estado = EstadoPedido.PENDIENTE;
+
     @ManyToMany
     @JoinTable(
             name = "pedido_producto",
@@ -29,4 +31,10 @@ public class Pedido {
             inverseJoinColumns = @JoinColumn(name = "producto_id")
     )
     private List<Producto> productos = new ArrayList<>();
+
+    public enum EstadoPedido {
+        PENDIENTE,
+        CONFIRMADO,
+        CANCELADO
+    }
 }
