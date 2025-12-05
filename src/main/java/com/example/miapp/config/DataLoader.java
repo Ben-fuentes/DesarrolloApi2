@@ -20,9 +20,9 @@ public class DataLoader {
 
                 userRepository.save(new User(
                         null,
-                        "Administrador General",    
-                        "admin",                   
-                        "admin123",                
+                        "Administrador General",     
+                        "admin",                    
+                        "admin123",                 
                         null,                       
                         User.Rol.ADMIN              
                 ));
