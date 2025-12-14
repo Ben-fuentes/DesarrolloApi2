@@ -70,6 +70,11 @@ public class PedidoController {
         return ResponseEntity.ok(pedido.getProductos());
     }
 
+    @GetMapping
+    public List<Pedido> getAllPedidos() {
+        return pedidoRepository.findAll();
+    }
+
     @DeleteMapping("/{pedidoId}/vaciar")
     public ResponseEntity<Void> vaciarPedido(@PathVariable Long pedidoId) {
 
