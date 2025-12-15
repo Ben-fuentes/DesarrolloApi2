@@ -36,15 +36,20 @@ public class ProductoController {
         return ResponseEntity.ok(prodRepository.save(nuevoProducto));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@PathVariable Long id,
-                                                   @RequestBody Producto prodDetails) {
+   @PutMapping("/{id}")
+    public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody Producto prodDetails) {
         return prodRepository.findById(id)
                 .map(existente -> {
                     existente.setNombre(prodDetails.getNombre());
                     existente.setPrecio(prodDetails.getPrecio());
                     existente.setDescripcion(prodDetails.getDescripcion());
                     existente.setCategoria(prodDetails.getCategoria());
+                    
+                    existente.setImg(prodDetails.getImg()); 
+                    existente.setStock(prodDetails.getStock());
+                    existente.setEnOferta(prodDetails.isEnOferta());
+                    existente.setPrecioAntes(prodDetails.getPrecioAntes());
+                    
                     return ResponseEntity.ok(prodRepository.save(existente));
                 })
                 .orElse(ResponseEntity.notFound().build());
