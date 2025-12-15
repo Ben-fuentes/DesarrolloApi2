@@ -28,12 +28,26 @@ public class UserController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+        System.out.println("INTENTO DE CREAR USUARIO:");
+        System.out.println("Datos recibidos: " + user.getNombreUser() + " - " + user.getRol());
+
+    
+        user.setId(null);
+
+        try {
+            User nuevoUsuario = userRepository.save(user);
+            System.out.println("USUARIO CREADO CON ÉXITO. ID: " + nuevoUsuario.getId());
+            return nuevoUsuario;
+        } catch (Exception e) {
+            System.out.println("ERROR FATAL AL GUARDAR EN BD: " + e.getMessage());
+            throw e; 
+        }
     }
 
-   @PutMapping("/{id}")
+    @PutMapping("/{id}")
     public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -41,13 +55,14 @@ public class UserController {
         user.setNombreUser(userDetails.getNombreUser());
         user.setContrasenia(userDetails.getContrasenia());
         user.setRol(userDetails.getRol());
-
+        
         user.setNombreCompleto(userDetails.getNombreCompleto()); 
         user.setMetodoPago(userDetails.getMetodoPago());        
 
         return userRepository.save(user);
     }
 
+    // BORRAR
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
