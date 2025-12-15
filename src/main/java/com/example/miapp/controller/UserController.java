@@ -33,16 +33,19 @@ public class UserController {
         return userRepository.save(user);
     }
 
-    @PutMapping("/{id}")
-    public User updateUser(@PathVariable Long id, @RequestBody User bookDetails) {
-        User book = userRepository.findById(id)
+   @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        user.setNombreUser(userDetails.getNombreUser());
+        user.setContrasenia(userDetails.getContrasenia());
+        user.setRol(userDetails.getRol());
 
-        book.setNombreUser(bookDetails.getNombreUser());
-        book.setContrasenia(bookDetails.getContrasenia());
-        book.setRol(bookDetails.getRol());
+        user.setNombreCompleto(userDetails.getNombreCompleto()); 
+        user.setMetodoPago(userDetails.getMetodoPago());        
 
-        return userRepository.save(book);
+        return userRepository.save(user);
     }
 
     @DeleteMapping("/{id}")
