@@ -23,12 +23,13 @@ public class User {
     private String metodoPago = null;
 
     @Enumerated(EnumType.STRING)
-    private Rol rol;    
-
+    private Rol rol; 
+    
     public enum Rol {
-    ADMIN,
-    CLIENTE
+        ADMIN,
+        CLIENTE,
+        VENDEDOR,
+        SOPORTE
     }
-
 }
 
