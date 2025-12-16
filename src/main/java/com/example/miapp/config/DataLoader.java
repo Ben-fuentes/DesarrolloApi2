@@ -15,47 +15,17 @@ public class DataLoader {
     CommandLineRunner loadData(ProductoRepository productoRepository, UserRepository userRepository) {
         return args -> {
 
+            // ===================== USUARIOS =====================
             if (userRepository.count() == 0) {
-
-                userRepository.save(new User(
-                        null,
-                        "Administrador General",
-                        "admin",
-                        "admin123",
-                        null,
-                        User.Rol.ADMIN
-                ));
-
-                userRepository.save(new User(
-                        null,
-                        "Cliente de Prueba",
-                        "cliente",
-                        "cliente123",
-                        "Efectivo",
-                        User.Rol.CLIENTE
-                ));
-
-                userRepository.save(new User(
-                        null,
-                        "Vendedor Tienda",
-                        "vendedor",
-                        "vendedor123",
-                        null,
-                        User.Rol.VENDEDOR
-                ));
-
-                userRepository.save(new User(
-                        null,
-                        "Soporte Técnico",
-                        "soporte",
-                        "soporte123",
-                        null,
-                        User.Rol.SOPORTE
-                ));
-
-                System.out.println("--- Usuarios de prueba cargados (Admin, Cliente, Vendedor, Soporte) ---");
+                userRepository.save(new User(null, "Administrador General", "admin", "admin123", null, User.Rol.ADMIN));
+                userRepository.save(new User(null, "Cliente de Prueba", "cliente", "cliente123", "Efectivo", User.Rol.CLIENTE));
+                userRepository.save(new User(null, "Vendedor Tienda", "vendedor", "vendedor123", null, User.Rol.VENDEDOR));
+                userRepository.save(new User(null, "Soporte Técnico", "soporte", "soporte123", null, User.Rol.SOPORTE));
+                System.out.println("--- Usuarios cargados ---");
             }
 
+            // ===================== PRODUCTOS =====================
+            // NOTA: Aquí ya no usamos Producto.Categoria.SKATE, sino el String "SKATE" directo.
             if (productoRepository.count() == 0) {
 
                 productoRepository.save(new Producto(
@@ -67,7 +37,7 @@ public class DataLoader {
                         30,
                         false,
                         null,
-                        Producto.Categoria.SKATE
+                        "SKATE" // <--- STRING DIRECTO
                 ));
 
                 productoRepository.save(new Producto(
@@ -79,7 +49,7 @@ public class DataLoader {
                         20,
                         false,
                         null,
-                        Producto.Categoria.SKATE
+                        "SKATE" // <--- STRING DIRECTO
                 ));
 
                 productoRepository.save(new Producto(
@@ -91,7 +61,7 @@ public class DataLoader {
                         15,
                         true,
                         150000,
-                        Producto.Categoria.ROLLER
+                        "ROLLER" // <--- STRING DIRECTO
                 ));
 
                 productoRepository.save(new Producto(
@@ -103,34 +73,34 @@ public class DataLoader {
                         10,
                         false,
                         null,
-                        Producto.Categoria.ROLLER
+                        "ROLLER" // <--- STRING DIRECTO
                 ));
 
                 productoRepository.save(new Producto(
                         null,
                         "BMX Freestyle X",
-                        245000.0, 
+                        245000.0,
                         "Bicicleta BMX diseñada para trucos y rampas, rotor 360.",
                         "https://raw.githubusercontent.com/alan-flores1/MovilWithBenyi2.0/0183b9638272c8a208e3d737fc5ae849d202bfd4/app/src/main/res/drawable/bmx1.webp",
                         12,
                         false,
                         null,
-                        Producto.Categoria.BMX
+                        "BMX" // <--- STRING DIRECTO
                 ));
 
                 productoRepository.save(new Producto(
                         null,
                         "BMX Street Pro",
-                        252000.0, 
+                        252000.0,
                         "Cuadro reforzado de acero cromoly, ideal para grindar.",
                         "https://raw.githubusercontent.com/alan-flores1/MovilWithBenyi2.0/0183b9638272c8a208e3d737fc5ae849d202bfd4/app/src/main/res/drawable/bmx2.webp",
                         7,
-                        true, 
+                        true,
                         300000,
-                        Producto.Categoria.BMX
+                        "BMX" // <--- STRING DIRECTO
                 ));
 
-                System.out.println("--- Productos con imágenes cargados ---");
+                System.out.println("--- Productos iniciales cargados ---");
             }
         };
     }
